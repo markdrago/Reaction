@@ -1,0 +1,122 @@
+<html>
+    <style type="text/css">
+body {
+    margin: 0;
+}
+
+#back {
+    height: 100%;
+    width: 100%;
+}
+
+.back-start {
+    background: DarkTurquoise;
+}
+
+.back-wait {
+    background: LightCoral;
+}
+
+.back-go {
+    background: lightgreen;
+}
+
+.back-done {
+    background: pink;
+}
+
+.back-toosoon {
+    background: gold;
+}
+
+#message {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    height: 100%;
+    color: white;
+    font-size: 50pt;
+}
+    </style>
+    <script type="text/javascript">
+        function changeBackgroundForState() {
+            document.getElementById("back").className="back-" + state;
+        }
+
+        function changeMessageText(message) {
+            document.getElementById("message").innerHTML = message;
+        }
+
+        function handleClick() {
+            if (state == "start") {
+                switchToWait();
+            } else if (state == "go") {
+                switchToDone();
+            } else if (state == "done" || state == "toosoon") {
+                switchToStart();
+            }else if (state == "wait"){
+                switchToTooSoon();
+            }
+        }
+
+        function switchToStart() {
+            state = "start";
+            changeBackgroundForState();
+            changeMessageText("CLICK TO START!");
+        }
+
+        function switchToWait() {
+            state = "wait";
+            changeBackgroundForState();
+            changeMessageText("WAIT!");
+
+            setTimeout(() => {
+                if (state == "wait") {
+                    switchToGo();
+                }
+            }, ((Math.random() * 9) + 1) * 1000);
+        }
+
+        function switchToGo() {
+            state = "go";
+            changeBackgroundForState();
+            changeMessageText("GO!");
+            goTimeStart = performance.now();
+        }
+
+        function switchToDone() {
+            let timeSpent = performance.now() - goTimeStart;
+            state = "done";
+            changeBackgroundForState();
+            changeMessageText("YAY!<br/>" +
+                "Your score is: " +
+                (timeSpent / 1000).toFixed(3) +
+                " seconds!<br /><br />" +
+                "Click to try again.");
+        }
+
+        function switchToTooSoon() {
+            state = "toosoon";
+            changeBackgroundForState();
+            changeMessageText("TOO SOON!<br/><br/>"+
+                "Click to try again.");
+        }
+
+        let state="start";
+        let goTimeStart = 0;
+        window.addEventListener("load", (ev) => {
+            document.getElementById("message").addEventListener("click", handleClick);
+            switchToStart();
+        });
+    </script>
+    <body>
+    <div id="back" class="back-start">
+
+    <div id="message">
+    CLICK TO BEGIN!
+    </div>
+
+    </div>
+    </body>
+</html>
